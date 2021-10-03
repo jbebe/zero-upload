@@ -55,6 +55,10 @@ form {
       &.ready {
         background-color: #d3c666;
       }
+      
+      &.after {
+        background-color: #e5dfb7;
+      }
 
       &[disabled] {
         background-color: #e1e1e1;

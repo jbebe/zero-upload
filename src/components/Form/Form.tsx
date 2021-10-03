@@ -16,6 +16,7 @@ export function Form() {
   const [uploadReady, setUploadReady] = useState(false);
   const [buttonState, setButtonState] = useState(ButtonState.Inactive);
   const [browserType, setBrowserType] = useState(DefaultBrowserUrlLength);
+  let [encryptedFile, setEncryptedFile] = useState('');
   const defaultUrlLength = browserType.IE.length;
   let [urlLength, setUrlLength] = useState(defaultUrlLength);
   const { acceptedFiles, fileRejections, getRootProps, getInputProps } = useDropzone({ 
@@ -94,19 +95,38 @@ export function Form() {
   }, [formInputReady, uploadReady]);
 
   const onSubmit = async () => {
-    if (buttonState === ButtonState.Ready) return;
-    // TODO: support multiple files
-    const encryptedFile = await encryptFileAsync(acceptedFiles[0], password);
-    window.navigator.clipboard.writeText(`${window.location.href}#${encryptedFile}`);
-    setButtonState(ButtonState.Ready);
+    switch (buttonState){
+      case ButtonState.Active:
+        // TODO: support multiple files
+        encryptedFile = await encryptFileAsync(acceptedFiles[0], password);
+        setEncryptedFile(encryptedFile);
+        setButtonState(ButtonState.Ready);
+        break;
+      case ButtonState.Ready:
+        window.navigator.clipboard.writeText(`${window.location.href}#${encryptedFile}`);
+        setButtonState(ButtonState.After);
+        setTimeout(() => setButtonState(ButtonState.Ready), 2 * 1000);
+        break;
+    }
   };
 
   const buttonClassObj = { 
     inactive: buttonState === ButtonState.Inactive, 
     active: buttonState === ButtonState.Active, 
     ready: buttonState === ButtonState.Ready,
+    after: buttonState === ButtonState.After,
   };
-  const buttonText = buttonState === ButtonState.Ready ? 'Link copied to clipboard' : 'Generate link';
+  const buttonText = (() => {
+    switch (buttonState){
+      case ButtonState.Inactive:
+      case ButtonState.Active:
+        return 'Generate link';
+      case ButtonState.Ready:
+        return 'Copy link to clipboard';
+      case ButtonState.After:
+        return 'Link copied';
+    }
+  })();
 
   return (
     <form>
