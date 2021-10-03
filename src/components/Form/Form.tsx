@@ -15,7 +15,6 @@ export function Form() {
   const [formInputReady, setFormInputReady] = useState(false);
   const [uploadReady, setUploadReady] = useState(false);
   const [buttonState, setButtonState] = useState(ButtonState.Inactive);
-  const [firstRender, setFirstRender] = useState(true);
   const [browserType, setBrowserType] = useState(DefaultBrowserUrlLength);
   const defaultUrlLength = browserType.IE.length;
   let [urlLength, setUrlLength] = useState(defaultUrlLength);
@@ -48,10 +47,6 @@ export function Form() {
   }
 
   useEffect(() => {
-    if (firstRender){
-      setFirstRender(false);
-      return;
-    }
     let isValid = true;
     
     if (!/^[\da-zA-Z]{5,}$/.test(password)){
@@ -99,11 +94,10 @@ export function Form() {
   }, [formInputReady, uploadReady]);
 
   const onSubmit = async () => {
+    if (buttonState === ButtonState.Ready) return;
     // TODO: support multiple files
     const encryptedFile = await encryptFileAsync(acceptedFiles[0], password);
-    console.log('before clipboard copy');
     window.navigator.clipboard.writeText(`${window.location.href}#${encryptedFile}`);
-    console.log('after clipboard copy');
     setButtonState(ButtonState.Ready);
   };
 
@@ -116,10 +110,6 @@ export function Form() {
 
   return (
     <form>
-      <fieldset className={classNames({ error: errorPassword })}>
-        <label data-tip="If you set the password, files will be encrypted">Password</label>
-        <input type="text" placeholder="password" value={password} onChange={e => setPassword(e.target.value)} />
-      </fieldset>
       <fieldset>
         <label data-tip={ 'Sets the supported file length.<br>Every browser supports different URL length so '
                           + 'we are aiming for the lowest to be used for storing the file data.'}>Browser support</label>
@@ -142,6 +132,10 @@ export function Form() {
             : <ul>{acceptedFiles.map(x => <li key={x.name}>{x.name} ({filesize(x.size)})</li>)}</ul>
           }
         </div>
+      </fieldset>
+      <fieldset className={classNames({ error: errorPassword })}>
+        <label data-tip="Set a password for the encryptable file. It must be longer than 4 characters and can only contain alphanumeric characters">Password</label>
+        <input type="text" placeholder="password" value={password} onChange={e => setPassword(e.target.value)} />
       </fieldset>
       <fieldset>
         <input className={classNames(buttonClassObj)} type="button" value={buttonText} disabled={buttonState === ButtonState.Inactive} onClick={() => onSubmit()} />
