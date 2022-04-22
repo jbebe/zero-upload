@@ -1,1 +1,0 @@
-export enum ButtonState { Inactive, Active, Ready, After }
