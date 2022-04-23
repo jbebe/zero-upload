@@ -1,0 +1,7 @@
+$size-desktop: 540px;
+
+@mixin media($size-px) {
+  @media only screen and (min-width: $size-px){
+    @content;
+  }
+}

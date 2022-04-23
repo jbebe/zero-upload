@@ -1,0 +1,14 @@
+@import '../helper';
+
+.container {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0 auto;
+  flex-direction: column;
+
+  @include media($size-desktop) {
+    width: 540px;
+  }
+}

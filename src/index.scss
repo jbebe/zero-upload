@@ -1,5 +1,9 @@
-$color-red: red;
+body {
+  margin: 0;
+  font-size: 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
-div {
-  color: $color-red;
+  * {
+    background: rgba(0,0,0,0.1);
+  }
 }

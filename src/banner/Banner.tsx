@@ -1,7 +1,8 @@
 import React from 'react'
+import styles from './Banner.module.scss'
 
 export default function Banner(){
-  return <>
-    zero upload
-  </>
+  return <div className={styles.banner}>
+    zero-upload
+  </div>
 }
