@@ -1,3 +1,5 @@
+export enum PageType { Upload, Download }
+
 export enum UploadType { Text, Image, File }
 
 export enum CompatibilityType { 

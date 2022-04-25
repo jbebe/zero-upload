@@ -1,5 +1,7 @@
+import { encryptDataAsync } from "../utils/crypto";
 import { CompatibilityType, UploadRequest, UploadType } from "../utils/types";
-import { urlEncode } from "./url-encoder";
+import { convertStringToUint8, convertUint8ToString } from "../utils/vanilla-helpers";
+import { urlDecode, urlEncode } from "./url-encoder";
 
 const browserUrlLengths = [
   { name: 'Chrome', modern: true, length: 2_097_152 },
@@ -15,44 +17,33 @@ export class LinkCreator {
   ){
   }
 
+  public static decode(hash: string){
+    const data = urlDecode(hash)
+    return convertUint8ToString(data)
+  }
+
   public async getAsync(){
     if (this.request.uploadType !== UploadType.Text) throw new Error('Unsupported upload type')
 
-    const urlLength = LinkCreator.getUrlLength(this.request.compatibility);
-    let data = LinkCreator.convertStringToUint8(this.request.textdata);
+    const urlLength = LinkCreator.getEffectiveUrlLength(this.request.compatibility);
+    let data = convertStringToUint8(this.request.textdata);
     if (this.request.password)
-      data = await LinkCreator.encryptDataAsync(data)
+      data = await encryptDataAsync(this.request.password, data)
     
-    return urlEncode(data)
-  }
+    const urlEncoded = urlEncode(data)
 
-  private static async encryptDataAsync(data: Uint8Array) {
-    const iv = window.crypto.getRandomValues(new Uint8Array(16))
-    const key = window.crypto.getRandomValues(new Uint8Array(16))
-    const key_encoded = await crypto.subtle.importKey(  "raw",    key.buffer,   'AES-CTR' ,  false,   ["encrypt", "decrypt"])
-    const counter = window.crypto.getRandomValues(new Uint8Array(16))
-    const encryptedData = await window.crypto.subtle.encrypt(
-      {
-        name: "AES-GCM",
-        iv: iv
-      },
-      key_encoded,
-      data
-    )
+    if (urlEncoded.length > urlLength){
+      return undefined
+    }
 
-    return encryptedData as Uint8Array
-  }
-
-  private static convertStringToUint8(data: string){
-    const encoder = new TextEncoder()
-    return encoder.encode(data)
+    return urlEncoded
   }
 
   private static async getFileContentAsync(file: File) {
     return await file.arrayBuffer()
   }
 
-  public static getUrlLength(urlCompatibility: CompatibilityType){
+  public static getEffectiveUrlLength(urlCompatibility: CompatibilityType){
     const baseUrlLength = location.href.length
     const filterCb = (x: typeof browserUrlLengths[number]) => (
       (urlCompatibility === CompatibilityType.Modern && x.modern) 
