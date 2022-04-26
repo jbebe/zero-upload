@@ -10,7 +10,7 @@ import Encryption from '../../../components/encryption/Encryption'
 import { LinkCreator } from '../../../logic/link-creator'
 
 // TODO: features to implement
-// * add bit field to the beginning: fields are: (ascii text, zipped, encrypted, upload type (image, file, etc.))
+// * add bit field to the beginning: fields are: (zipped, encrypted, upload type (image, file, etc.))
 
 export default function Upload(){
   const [uploadType, setUploadType] = useState<UploadType>(UploadType.Text)

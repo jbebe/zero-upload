@@ -25,6 +25,11 @@ export class LinkCreator {
   public async getAsync(){
     if (this.request.uploadType !== UploadType.Text) throw new Error('Unsupported upload type')
 
+    const flags = {
+      compressed: true,
+      encrypted: true,
+      uploadType: 
+    }
     const urlLength = LinkCreator.getEffectiveUrlLength(this.request.compatibility);
     let data = convertStringToUint8(this.request.textdata);
     if (this.request.password)
