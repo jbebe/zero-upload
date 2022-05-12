@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "base-x": "^4.0.0",
+    "lzutf8": "^0.6.2",
     "preact": "^10.7.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

@@ -2,9 +2,9 @@ import scrypt from "scrypt-async"
 
 export async function encryptDataAsync(password: string, data: Uint8Array) {
   // random iv
-  const iv = window.crypto.getRandomValues(new Uint8Array(16))
+  const iv = new Uint8Array(16)
   // derive key from password
-  const key = await deriveKeyAsync(password, iv)
+  const key = await deriveKeyAsync(password)
   const keyObj = await crypto.subtle.importKey('raw', key.buffer, 'AES-GCM', false, ['encrypt', 'decrypt'])
   // encrypt data
   const encryptedData = await window.crypto.subtle.encrypt(
@@ -18,8 +18,26 @@ export async function encryptDataAsync(password: string, data: Uint8Array) {
   return new Uint8Array(encryptedData)
 }
 
-async function deriveKeyAsync(password: string, iv: Uint8Array): Promise<Uint8Array> {
-  const salt = Array.from(iv)
+export async function decryptDataAsync(password: string, data: Uint8Array) {
+  // random iv
+  const iv = new Uint8Array(16)
+  // derive key from password
+  const key = await deriveKeyAsync(password)
+  const keyObj = await crypto.subtle.importKey('raw', key.buffer, 'AES-GCM', false, ['encrypt', 'decrypt'])
+  // encrypt data
+  const encryptedData = await window.crypto.subtle.decrypt(
+    {
+      name: "AES-GCM",
+      iv: iv,
+    },
+    keyObj,
+    data
+  )
+  return new Uint8Array(encryptedData)
+}
+
+async function deriveKeyAsync(password: string): Promise<Uint8Array> {
+  const salt = Array.from(new Uint8Array(0))
   return new Promise((resolve, reject) => {
     try {
       scrypt(password, salt, {
