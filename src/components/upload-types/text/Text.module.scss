@@ -1,3 +1,15 @@
+$primary-color: #00565c; // Change color here. C'mon, try it! 
+
 .text {
   
+  textarea {
+    border: none;
+    outline: none;
+    padding: 10px;
+
+    width: calc(100% - 2*10px);
+    min-height: 60px;
+    box-shadow: inset 0 0 0 2px mix(white, $primary-color, 80%);
+  }
+
 }

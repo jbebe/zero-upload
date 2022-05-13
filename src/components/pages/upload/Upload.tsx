@@ -1,6 +1,6 @@
 import React, { FormEvent, useState } from 'react'
 import styles from './Upload.module.scss'
-import { CompatibilityType, FormFields, UploadRequest, UploadType } from '../../../utils/types'
+import { FormFields, UploadRequest, UploadType } from '../../../utils/types'
 import Text from '../../../components/upload-types/text/Text'
 import { objectEntries } from '../../../utils/vanilla-helpers'
 import Image from '../../../components/upload-types/image/Image'
@@ -40,7 +40,7 @@ export default function Upload(){
 
   const [uploadType, setUploadType] = useState<UploadType>(UploadType.Text)
   const types = {
-    [UploadType.Text]: { label: 'Text', component: <Text /> },
+    [UploadType.Text]: { label: 'Text', component: <Text placeholder='Your message...' /> },
     [UploadType.Image]: { label: 'Image', component: <Image /> },
     [UploadType.File]: { label: 'File', component: <File /> },
   }
@@ -61,16 +61,16 @@ export default function Upload(){
     evt.preventDefault()
   }
   const renderMenu = () => objectEntries(types).map(([type, obj]) => 
-    <li onClick={() => setUploadType(+type)}>{obj.label}</li>)
+    <li onClick={() => setUploadType(+type)} className={+type === uploadType ? styles.active : ''}>{obj.label}</li>)
   return <div className={styles.upload}>
-    <ul>
+    <ul className={styles.tab}>
       {renderMenu()}
     </ul>
     <form onSubmit={onSubmit}>
       <Compatibility />
       {types[uploadType].component}
       <Encryption />
-      <button>Generate link</button>
+      <button className={styles.button}>Generate link</button>
     </form>
   </div>
 }

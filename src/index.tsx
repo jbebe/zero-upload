@@ -6,8 +6,10 @@ import Container from './components/container/Container'
 import './index.scss'
 
 ReactDOM.render(
-  <Container>
+  <>
     <Banner />
-    <App />
-  </Container>,
+    <Container>
+      <App />
+    </Container>
+  </>,
   document.querySelector('#root'))

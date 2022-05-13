@@ -1,3 +1,54 @@
-.compatibility {
+$primary-color: #00565c; // Change color here. C'mon, try it! 
 
+.compatibility {
+  display: flex;
+  flex-direction: row;
+
+  > div {
+    line-height: 29px;
+    font-weight: 500;
+  }
+
+  > label {
+    display: flex;
+    cursor: pointer;
+    font-weight: 400;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 0.375em;
+    margin-left: 5px;
+
+    input {
+      position: absolute;
+      left: -9999px;
+      &:checked + span {
+        background-color: mix(#fff, $primary-color, 92%);
+        &:before {
+          box-shadow: inset 0 0 0 0.4375em $primary-color;
+        }
+      }
+    }
+    span {
+      display: flex;
+      align-items: center;
+      padding: 0.375em 0.75em 0.375em 0.375em;
+      border-radius: 99em; // or something higher...
+      transition: 0.25s ease;
+      &:hover {
+        background-color: mix(#fff, $primary-color, 92%);
+      }
+      &:before {
+        display: flex;
+        flex-shrink: 0;
+        content: "";
+        background-color: #fff;
+        width: 1.5em;
+        height: 1.5em;
+        border-radius: 50%;
+        margin-right: 0.375em;
+        transition: 0.25s ease;
+        box-shadow: inset 0 0 0 0.125em $primary-color;
+      }
+    }
+  }
 }
