@@ -63,14 +63,16 @@ export default function Upload(){
   const renderMenu = () => objectEntries(types).map(([type, obj]) => 
     <li onClick={() => setUploadType(+type)} className={+type === uploadType ? styles.active : ''}>{obj.label}</li>)
   return <div className={styles.upload}>
-    <ul className={styles.tab}>
-      {renderMenu()}
-    </ul>
     <form onSubmit={onSubmit}>
-      <Compatibility />
+      <div className={styles.tabContainer}>
+        <ul className={styles.tab}>
+          {renderMenu()}
+        </ul>
+        <Compatibility />
+      </div>
       {types[uploadType].component}
-      <Encryption />
-      <button className={styles.button}>Generate link</button>
+      <Encryption className={styles.encryption} />
+      <button className={styles.sendButton}>Generate link</button>
     </form>
   </div>
 }

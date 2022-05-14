@@ -1,3 +1,43 @@
 .encryption {
+  padding: 7px 15px 7px 10px;
+  border-radius: 6px;
+  box-shadow: 0 0 1px 1px #f0f0f0;
 
+  &:hover {
+    background: #f8f8f8;
+  }
+
+  &.active {
+    background: #fffcda;
+
+    .input {
+      margin-top: 10px;
+      height: 38px;
+    }
+  }
+
+  .toggle {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    cursor: pointer;
+
+    div:first-child {
+      font-weight: 700;
+    }
+  }
+
+  .input {
+    margin: 0;
+    height: 0;
+    overflow: hidden;
+    transition: height 0.2s linear, margin-top 0.2s linear;
+
+    input {
+      margin: 0;
+      padding: 8px 10px;
+      width: calc(100% - 2*11px);
+      border: #aaa 1px solid;
+    }
+  }
 }
