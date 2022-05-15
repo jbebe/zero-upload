@@ -13,7 +13,7 @@ module.exports = (env, args) => {
     target: 'web',
     mode: isDevelopment ? 'development' : 'production',
     output: {
-      filename: '[name].js',
+      filename: isDevelopment ? '[name].js' : '[name].[contenthash].js',
       path: path.resolve(__dirname, 'dist'),
     },
     devtool: isDevelopment ? 'source-map' : false,
