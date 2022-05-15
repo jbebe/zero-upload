@@ -15,6 +15,24 @@ body {
   }
 }
 
+a {
+  color: rgb(0, 195, 195);
+
+  &:focus {
+    color: rgb(0, 185, 185);
+  }
+
+  &:visited {
+    color: rgb(90, 155, 157);
+  }
+}
+
+.Toastify {
+  .Toastify__toast {
+    cursor: default;
+  }
+}
+
 @keyframes gradient {
 	0% {
 		background-position: 0% 50%;

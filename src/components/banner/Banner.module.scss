@@ -6,7 +6,7 @@
   height: $banner-height;
   position: relative;
 
-  a {
+  a, a:visited {
     position: absolute;
     bottom: 0;
     margin: 15px 0 0 25px;

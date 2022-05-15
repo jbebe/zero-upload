@@ -8,6 +8,7 @@ import File from '../../../components/upload-types/file/File'
 import Compatibility from '../../../components/compatibility/Compatibility'
 import Encryption from '../../../components/encryption/Encryption'
 import { LinkCreator } from '../../../logic/link-creator'
+import { toast } from 'react-toastify'
 
 export default function Upload(){
   (async () => {
@@ -56,7 +57,11 @@ export default function Upload(){
         filedata: formData.get(FormFields.FileData) as File | null,
       }
       const link = await LinkCreator.packAsync(request)
-      alert(`${location.href}#${link}`)
+      const url = `${location.href}#${link}`
+      await navigator.clipboard.writeText(url)
+      toast.info(<>
+        <a href={url} target='_blank'>Your link</a> has been copied to clipboard
+      </>)
     })()
     evt.preventDefault()
   }
@@ -72,7 +77,7 @@ export default function Upload(){
       </div>
       {types[uploadType].component}
       <Encryption className={styles.encryption} />
-      <button className={styles.sendButton}>Generate link</button>
+      <button className={styles.sendButton}>Create Link</button>
     </form>
   </div>
 }

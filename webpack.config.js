@@ -54,6 +54,17 @@ module.exports = (env, args) => {
           ]
         },
         {
+          test: /\.css$/,
+          oneOf: [
+            {
+              use: [
+                MiniCssExtractPlugin.loader, 
+                'css-loader',
+              ]
+            }
+          ]
+        },
+        {
           test: /\.tsx?$/,
           use: 'ts-loader',
           exclude: '/node_modules/'

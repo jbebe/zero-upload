@@ -7,7 +7,7 @@ import styles from './Download.module.scss'
 export default function Download(){
   const [password, setPassword] = useState('')
   const [pwState, setPwState] = useState(undefined as (boolean | undefined))
-  const [debouncedPassword] = useDebounce(password, 1000);
+  const [debouncedPassword] = useDebounce(password, 300);
 
   const hash = location.hash.slice(1)
   const [flags, dataPart] = LinkCreator.getParts(hash)
