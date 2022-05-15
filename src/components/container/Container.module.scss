@@ -1,0 +1,26 @@
+@import '../../helper';
+
+.container {
+  $desktop-width: 450px;
+  $default-margin: 10px;
+
+  width: calc(100vw - 2*$default-margin);
+  height: calc(100vh - $banner-height);
+  max-width: $desktop-width;
+
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin: 0 auto;
+  
+  > * {
+    max-height: calc(100% - 2*$default-margin);
+  }
+
+  $desktop-margin: 60px;
+  $desktop-size: calc($desktop-width + 2*$desktop-margin);
+  @include media($desktop-size) {
+    width: $desktop-width;
+    margin-left: $desktop-margin;
+  }
+}
