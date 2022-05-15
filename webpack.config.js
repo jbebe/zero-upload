@@ -1,6 +1,7 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CopyPlugin = require('copy-webpack-plugin')
 
 module.exports = (env, args) => {
   const isDevelopment = !args || !args['mode'] || args['mode'] === 'development';
@@ -60,12 +61,17 @@ module.exports = (env, args) => {
       ],
     },
     plugins: [
+      new CopyPlugin({
+        patterns: [
+          { from: "src/asset", to: "./" },
+        ],
+      }),
       new HtmlWebpackPlugin({
-        template: 'src/template.html'
+        template: 'src/asset/template.html'
       }),
       new MiniCssExtractPlugin({
-        filename: isDevelopment ? '[name].css' : '[name].[hash].css',
-        chunkFilename: isDevelopment ? '[id].css' : '[id].[hash].css'
+        filename: isDevelopment ? '[name].css' : '[name].[contenthash].css',
+        chunkFilename: isDevelopment ? '[id].css' : '[id].[contenthash].css'
       }),
     ]
   }
