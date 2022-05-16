@@ -1,3 +1,38 @@
+$primary-color: #00565c;
+
 .image {
+  background-position: center;
+  background-size: cover;
+
+  &.active .wrapper {
+    border: mix(white, $primary-color, 50%) 2px dashed;
+  }
+
+  &:focus, &:hover {
+    background-color: mix(white, $primary-color, 96%);
+  }
+
+  .wrapper {
+    border: mix(white, $primary-color, 80%) 2px dashed;
+    padding: 10px 8px;
+    margin: 0 0 10px 0;
+    height: 60px;
   
+    color: #777;
+    font-family: monospace;
+    font-size: inherit;
+    cursor: pointer;
+    
+    backdrop-filter: blur(4px) contrast(20%) brightness(180%);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    > i {
+      color: #01bebe;
+      font-size: 25px;
+      text-shadow: -1px -1px 0px white;
+    }
+  }
 }

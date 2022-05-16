@@ -41,9 +41,19 @@ export default function Upload(){
 
   const [uploadType, setUploadType] = useState<UploadType>(UploadType.Text)
   const types = {
-    [UploadType.Text]: { label: 'Text', component: <Text placeholder='Your message...' /> },
-    [UploadType.Image]: { label: 'Image', component: <Image /> },
-    [UploadType.File]: { label: 'File', component: <File /> },
+    [UploadType.Text]: { 
+      label: 'Text', 
+      component: <Text placeholder='Your message...' />,
+    },
+    [UploadType.Image]: { 
+      label: 'Image', 
+      component: <Image />,
+    },
+    [UploadType.File]: { 
+      label: 'File', 
+      component: <File />,
+      comingSoon: true,
+    },
   }
   const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
     (async () => {
@@ -65,8 +75,13 @@ export default function Upload(){
     })()
     evt.preventDefault()
   }
-  const renderMenu = () => objectEntries(types).map(([type, obj]) => 
-    <li onClick={() => setUploadType(+type)} className={+type === uploadType ? styles.active : ''}>{obj.label}</li>)
+  const renderMenu = () => objectEntries(types).map(([type, obj]) => {
+    const isComingSoon = 'comingSoon' in obj
+    return <li 
+      onClick={() => isComingSoon || setUploadType(+type)} 
+      className={`${+type === uploadType ? styles.active : ''} ${isComingSoon ? styles.comingSoon : ''}`}
+    >{obj.label}</li>
+  })
   return <div className={styles.upload}>
     <form onSubmit={onSubmit}>
       <div className={styles.tabContainer}>

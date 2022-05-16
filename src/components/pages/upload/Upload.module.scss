@@ -29,9 +29,14 @@
         color: #888;
         font-weight: 500;
   
-        &:hover, &:focus, &.active {
+        &:not(.coming-soon):hover, &:not(.coming-soon):focus, &.active {
           border-bottom: 2px solid black;
           color: black;
+        }
+
+        &.coming-soon {
+          color: #ccc;
+          text-decoration: line-through;
         }
   
         &.compatibility {

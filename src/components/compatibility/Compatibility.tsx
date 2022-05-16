@@ -7,7 +7,7 @@ export default function Compatibility() {
     <div className={styles.compatibility}>
       <label className={styles.toggleControl}>
         compatibility
-        <input type="checkbox" name={FormFields.Compatibility} />
+        <input type="checkbox" name={FormFields.Compatibility} checked />
         <span className={styles.control}></span>
       </label>
     </div>

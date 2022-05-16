@@ -10,6 +10,7 @@ const browserUrlLengths = [
   { name: 'Chrome', modern: true, length: 2_097_152 },
   { name: 'Firefox', modern: true, length: 65_536 },
   { name: 'Internet Explorer', modern: false, length: 2083 },
+  { name: 'Edge', modern: false, length: 2083 },
   { name: 'Opera', modern: false, length: 2_097_152 },
   { name: 'Safari', modern: true, length: 80_000 },
 ]
