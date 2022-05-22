@@ -53,5 +53,5 @@ async function deriveKeyAsync(password: string): Promise<Uint8Array> {
     } catch (ex){
       reject(ex)
     }
-  });
+  })
 }

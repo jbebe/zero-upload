@@ -5,7 +5,7 @@ import Banner from './components/banner/Banner'
 import Container from './components/container/Container'
 import { ToastContainer } from 'react-toastify'
 import './index.scss'
-import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css'
 
 ReactDOM.render(
   <>

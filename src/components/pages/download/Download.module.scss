@@ -42,6 +42,15 @@ $primary-color: #00565c;
       }
     }
 
+    .text, .image {
+        > div {
+          /*display: flex;
+          flex-direction: column;
+          justify-content: center;*/
+          text-align: center;
+        }
+    }
+
     .text {
       > div {
         background: #f0f0f0;
@@ -52,6 +61,14 @@ $primary-color: #00565c;
         overflow-y: auto;
         width: calc(100% - 20px);
         max-height: calc(100vh - 124px);
+      }
+    }
+
+    .image {
+      > div > img {
+        border: #bbb solid 3px;
+        max-width: calc(100% - 2*3px);
+        max-height: 200px;
       }
     }
   }

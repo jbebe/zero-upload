@@ -14,7 +14,7 @@ describe('Test pre-created 8 bit schema', () => {
       bar: 6,
       baz: 1,
     })
-  });
+  })
 
   test('field write', () => {
     bf.foo = 1
@@ -31,8 +31,8 @@ describe('Test pre-created 8 bit schema', () => {
     bf.bar = 0b111111
     bf.baz = 1
     
-    const arr = new Uint8Array(1);
-    arr[0] = bf;
+    const arr = new Uint8Array(1)
+    arr[0] = bf
     expect(arr[0]).toBe(255)
   })
 
