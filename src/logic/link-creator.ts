@@ -4,7 +4,7 @@ import { decodeImageAsync, fuzzyEncodeImageAsync } from "../utils/image"
 import { formatSize } from "../utils/size"
 import { CompatibilityType, ImageMimeType, UploadRequest, UploadType } from "../utils/types"
 import { convertStringToUint8, convertUint8ToString } from "../utils/vanilla-helpers"
-import { iFactor, urlDecode, urlEncode } from "./url-encoder"
+import { iFactor, iFactorCompatibility, urlDecode, urlEncode } from "./url-encoder"
 
 declare var LZUTF8: any
 
@@ -18,9 +18,12 @@ const browserUrlLengths = [
 ]
 
 const flagSchema = {
+  compatibility: 1,
   encrypted: 1,
   compressed: 1,
   uploadType: 2,
+  _placeholder: 1,
+  // if more flags are needed, encoded flag will be 2 characters wide!
 }
 
 export class LinkCreator {
@@ -29,7 +32,7 @@ export class LinkCreator {
     if (flags.uploadType === UploadType.File) throw new Error('File type is not supported')
 
     if (flags.encrypted)
-      data = await decryptDataAsync(password, data)
+      data = await decryptDataAsync(password, data, flags.compatibility === 1)
 
     if (flags.compressed)
       data = LZUTF8.decompress(data, {
@@ -46,9 +49,14 @@ export class LinkCreator {
   }
 
   public static getParts(encodedData: string): [typeof flagSchema, Uint8Array] {
-    const pack = urlDecode(encodedData)
-    const flags = Bitfield.create(8, flagSchema, pack[0])
-    const data = pack.slice(1)
+    // flag
+    const encodedFlag = urlDecode(encodedData.slice(0, 1), /*compatibility: always*/ true)[0]
+    const flags = Bitfield.create(8, flagSchema, encodedFlag)
+    
+    // data
+    encodedData = encodedData.slice(1)
+    const data = urlDecode(encodedData, flags.compatibility === 1)
+    
     return [flags, data]
   }
 
@@ -63,8 +71,8 @@ export class LinkCreator {
 
   public static async packAsync(request: UploadRequest){
     // Validate & compress if shorter
-    const maxUrlLength = LinkCreator.getEffectiveUrlLength(request.compatibility) / iFactor
-    console.log('max url', maxUrlLength)
+    const maxUrlLength = LinkCreator.getEffectiveUrlLength(request.compatibility)
+    console.log('max url: ', maxUrlLength)
     let data: Uint8Array
     let shouldCompress = false
     switch (request.uploadType){
@@ -86,34 +94,37 @@ export class LinkCreator {
     // Encrypt if requested
     const encrypted = !!request.password
     if (encrypted)
-      data = await encryptDataAsync(request.password, data)
+      data = await encryptDataAsync(request.password, data, request.compatibility === 1)
 
     // Add flags
     const flags = Bitfield.create(8, flagSchema, {
+      compatibility: +request.compatibility,
       encrypted: +encrypted,
       uploadType: +request.uploadType,
-      compressed: +shouldCompress
+      compressed: +shouldCompress,
+      _placeholder: 0,
     })
-    data = Uint8Array.from([flags + 0, ...Array.from(data)])
+    const flagsFragment = urlEncode(Uint8Array.from([flags + 0]), /*compat: awlays*/ true)
 
     // URL encode
     if (data.byteLength > maxUrlLength)
       throw new Error(`Url reached maximum length: ${formatSize(data.byteLength)}`)
-    const urlEncoded = urlEncode(data)
-
-    return urlEncoded
+    const urlEncoded = urlEncode(data, request.compatibility === 1)
+    return `${flagsFragment}${urlEncoded}`
   }
 
   public static getEffectiveUrlLength(urlCompatibility: CompatibilityType){
-    const baseUrlLength = location.href.length
     const filterCb = (x: typeof browserUrlLengths[number]) => (
-      (urlCompatibility === CompatibilityType.Modern && x.modern) 
-      || urlCompatibility !== CompatibilityType.Modern
+      (urlCompatibility === CompatibilityType.None && x.modern) 
+      || urlCompatibility !== CompatibilityType.None
     )
-    
-    return browserUrlLengths
+    const supportedUrlLength = browserUrlLengths
       .filter(filterCb)
       .map(x => x.length)
-      .reduce((prev, curr) => curr < prev ? curr : prev, 2_097_152) - baseUrlLength
+      .reduce((prev, curr) => curr < prev ? curr : prev, Infinity)
+    const baseUrlLength = location.href.length
+    const dataLength = supportedUrlLength - baseUrlLength
+    const urlEncodeMultiplier = urlCompatibility === CompatibilityType.Maximum ? iFactorCompatibility : iFactor
+    return dataLength / urlEncodeMultiplier
   }
 }

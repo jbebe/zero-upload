@@ -3,8 +3,8 @@ export enum PageType { Upload, Download }
 export enum UploadType { Text, Image, File }
 
 export enum CompatibilityType { 
-  Modern,
-  Maximum, 
+  None = 0,
+  Maximum = 1, 
 }
 
 export enum FormFields {

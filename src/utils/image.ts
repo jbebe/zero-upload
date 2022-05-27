@@ -9,7 +9,9 @@ async function isAvifSupportedAsync(): Promise<boolean> {
   if (_avifSupported === undefined){
     await new Promise((resolve, _) => {
       const avif = new Image()
-      avif.src = 'data:image/avif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY/j//z8ABf4C/qc1gYQAAAAASUVORK5CYII='
+      avif.src = 'data:image/avif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAAC' +
+        'Qd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqG' + 
+        'QAAAAMSURBVBhXY/j//z8ABf4C/qc1gYQAAAAASUVORK5CYII='
       avif.onload = avif.onerror = function () {
           _avifSupported = avif.height === 1
           resolve(_avifSupported);

@@ -1,35 +1,59 @@
 import scrypt from "scrypt-async"
 
-export async function encryptDataAsync(password: string, data: Uint8Array) {
-  // random iv
-  const iv = new Uint8Array(16)
-  // derive key from password
-  const key = await deriveKeyAsync(password)
-  const keyObj = await crypto.subtle.importKey('raw', key.buffer, 'AES-GCM', false, ['encrypt', 'decrypt'])
-  // encrypt data
-  const encryptedData = await window.crypto.subtle.encrypt(
-    {
-      name: "AES-GCM",
-      iv: iv
+const Algorithm = [
+  {
+    name: 'AES-GCM',
+    iv: window.crypto.getRandomValues(new Uint8Array(16)),
+    getEncryptedResult(data: any){
+      return new Uint8Array([...this.iv, ...Array.from(new Uint8Array(data))])
     },
+    getConfig(iv?: Uint8Array){
+      iv ??= this.iv
+      return {
+        name: "AES-GCM",
+        iv,
+      }
+    },
+    getParts: (data: Uint8Array) => [data.slice(0, 16), data.slice(16)]
+  },
+  { 
+    name: 'AES-CTR', 
+    // iv: zero bytes because we won't send it, we won't be able to recover it
+    iv: new Uint8Array(16),
+    getEncryptedResult: (data: any) => new Uint8Array(data),
+    getConfig(iv?: Uint8Array){ 
+      iv ??= this.iv
+      console.log('iv: ', this.iv);
+      return {
+        name: 'AES-CTR',
+        counter: iv,
+        length: 8 * iv.byteLength,
+      }
+    },
+    getParts: (data: Uint8Array) => [undefined, data]
+  },
+]
+
+export async function encryptDataAsync(password: string, data: Uint8Array, compatibility: boolean) {
+  const algorithm = Algorithm[+compatibility]
+  const key = await deriveKeyAsync(password)
+  const keyObj = await crypto.subtle.importKey('raw', key.buffer, algorithm.name, false, ['encrypt', 'decrypt'])
+  const encryptedData = await window.crypto.subtle.encrypt(
+    algorithm.getConfig(),
     keyObj,
     data
   )
-  return new Uint8Array(encryptedData)
+  return algorithm.getEncryptedResult(encryptedData)
 }
 
-export async function decryptDataAsync(password: string, data: Uint8Array) {
-  // random iv
-  const iv = new Uint8Array(16)
-  // derive key from password
+export async function decryptDataAsync(password: string, packedData: Uint8Array, compatibility: boolean) {
+  const algorithm = Algorithm[+compatibility]
   const key = await deriveKeyAsync(password)
-  const keyObj = await crypto.subtle.importKey('raw', key.buffer, 'AES-GCM', false, ['encrypt', 'decrypt'])
-  // encrypt data
+  const keyObj = await crypto.subtle.importKey('raw', key.buffer, algorithm.name, false, ['encrypt', 'decrypt'])
+  const [iv, data] = algorithm.getParts(packedData)
+  console.log(iv, data)
   const encryptedData = await window.crypto.subtle.decrypt(
-    {
-      name: "AES-GCM",
-      iv: iv,
-    },
+    algorithm.getConfig(iv),
     keyObj,
     data
   )
