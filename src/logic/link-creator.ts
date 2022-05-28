@@ -1,5 +1,6 @@
 import { Bitfield } from "../utils/bitfield"
 import { decryptDataAsync, encryptDataAsync } from "../utils/crypto"
+import { decodeFile, loadFileAsync } from "../utils/file"
 import { decodeImageAsync, fuzzyEncodeImageAsync } from "../utils/image"
 import { formatSize } from "../utils/size"
 import { CompatibilityType, ImageMimeType, UploadRequest, UploadType } from "../utils/types"
@@ -29,8 +30,6 @@ const flagSchema = {
 export class LinkCreator {
 
   public static async unpackAsync(data: Uint8Array, flags: typeof flagSchema, password?: string): Promise<string> {
-    if (flags.uploadType === UploadType.File) throw new Error('File type is not supported')
-
     if (flags.encrypted)
       data = await decryptDataAsync(password, data, flags.compatibility === 1)
 
@@ -45,6 +44,8 @@ export class LinkCreator {
         return convertUint8ToString(data)
       case UploadType.Image:
         return await decodeImageAsync(data)
+      case UploadType.File:
+        return decodeFile(data)
     }
   }
 
@@ -72,22 +73,33 @@ export class LinkCreator {
   public static async packAsync(request: UploadRequest){
     // Validate & compress if shorter
     const maxUrlLength = LinkCreator.getEffectiveUrlLength(request.compatibility)
-    console.log('max url: ', maxUrlLength)
     let data: Uint8Array
     let shouldCompress = false
     switch (request.uploadType){
       case UploadType.Text:
+      {
         data = convertStringToUint8(request.textdata)
         const compressedData = LinkCreator.compressText(data)
         shouldCompress = data.byteLength > compressedData.byteLength
-        if (shouldCompress){
+        if (shouldCompress)
           data = compressedData
-        }
         break
+      }
       case UploadType.Image:
+      {
         data = await fuzzyEncodeImageAsync(request.imagedata, maxUrlLength)
         break
+      }
       case UploadType.File:
+      {
+        data = await loadFileAsync(request.filedata)
+        const compressedData = LinkCreator.compressText(data)
+        shouldCompress = data.byteLength > compressedData.byteLength
+        if (shouldCompress)
+          data = compressedData
+        break 
+      }
+      default:
         throw new Error(`Unsupported upload type: ${request.uploadType}`)
     }
 

@@ -23,7 +23,6 @@ const Algorithm = [
     getEncryptedResult: (data: any) => new Uint8Array(data),
     getConfig(iv?: Uint8Array){ 
       iv ??= this.iv
-      console.log('iv: ', this.iv);
       return {
         name: 'AES-CTR',
         counter: iv,
@@ -51,7 +50,6 @@ export async function decryptDataAsync(password: string, packedData: Uint8Array,
   const key = await deriveKeyAsync(password)
   const keyObj = await crypto.subtle.importKey('raw', key.buffer, algorithm.name, false, ['encrypt', 'decrypt'])
   const [iv, data] = algorithm.getParts(packedData)
-  console.log(iv, data)
   const encryptedData = await window.crypto.subtle.decrypt(
     algorithm.getConfig(iv),
     keyObj,

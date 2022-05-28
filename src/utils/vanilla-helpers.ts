@@ -12,15 +12,3 @@ export function convertUint8ToString(data: Uint8Array){
   return decoder.decode(data)
 }
 
-export async function loadFileAsync(file: File): Promise<ArrayBuffer> {
-  return await new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onabort = () => reject()
-    reader.onerror = () => reject()
-    reader.onload = () => {
-      const binaryStr = reader.result as ArrayBuffer
-      resolve(binaryStr)
-    }
-    reader.readAsArrayBuffer(file)
-  })
-}

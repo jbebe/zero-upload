@@ -4,7 +4,7 @@ $primary-color: #00565c;
   display: flex;
   flex-direction: row;
 
-  .file {
+  .media {
     color: rgb(203 203 203);
     font-size: 50px;
     margin: 8px 12px 0 12px;
@@ -42,11 +42,8 @@ $primary-color: #00565c;
       }
     }
 
-    .text, .image {
+    .image, .file {
         > div {
-          /*display: flex;
-          flex-direction: column;
-          justify-content: center;*/
           text-align: center;
         }
     }
@@ -65,10 +62,13 @@ $primary-color: #00565c;
     }
 
     .image {
-      > div > img {
-        border: #bbb solid 3px;
-        max-width: calc(100% - 2*3px);
-        max-height: 200px;
+      > div {
+        > img {
+          border: #bbb solid 3px;
+          max-width: calc(100% - 2*3px);
+          max-height: 200px;
+          margin-bottom: 8px;
+        }
       }
     }
   }

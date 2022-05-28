@@ -1,6 +1,5 @@
 import { formatSize } from "./size"
 import { ImageMimeType, ImageType } from "./types"
-import { loadFileAsync } from "./vanilla-helpers"
 
 // BUG: Chrome does not support avif encoding with custom quality, 
 // fallback to webp until it gets fixed
@@ -19,10 +18,6 @@ async function isAvifSupportedAsync(): Promise<boolean> {
     })
   }
   return _avifSupported
-}
-
-export function loadImageAsync(image: File){
-  return loadFileAsync(image)
 }
 
 export function getDataUrlAsync(file: File): Promise<string> {
@@ -66,6 +61,7 @@ export async function encodeImageAsync(imageFile: File, type: ImageMimeType, qua
 }
 
 export async function decodeImageAsync(data: Uint8Array): Promise<string> {
+  // TODO: bug, remove this. only the encoding side decides which one to use
   const mimeType = await isAvifSupportedAsync() ? ImageMimeType.Avif : ImageMimeType.Webp
   const blob = new Blob([data], { type: mimeType })
   const url = URL.createObjectURL(blob)
@@ -74,12 +70,13 @@ export async function decodeImageAsync(data: Uint8Array): Promise<string> {
 
 export async function fuzzyEncodeImageAsync(imageFile: File, maxLength: number): Promise<Uint8Array> {
   const compressionAlgorithm = await isAvifSupportedAsync() ? ImageMimeType.Avif : ImageMimeType.Webp
+  console.log(`Chosen image compression: ${compressionAlgorithm}`)
   let image: Uint8Array
 
   // fit into url by decreasing quality
   for (let i = 80; i >= 0; i -= 10){
     image = await encodeImageAsync(imageFile, compressionAlgorithm, i/100.0, 1)
-    console.log(`decrease quality: ${formatSize(image.byteLength)}`)
+    console.log(`change quality: ${i}% ${formatSize(image.byteLength)}`)
     if (image.byteLength <= maxLength)
       return image
   }

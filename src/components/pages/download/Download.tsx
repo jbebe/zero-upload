@@ -34,6 +34,7 @@ export default function Download(){
   const mediaMap: Record<number, { style: string, label: string }> = {
     [UploadType.Text]: { style: styles.text, label: 'Text message' },
     [UploadType.Image]: { style: styles.image, label: 'Image' },
+    [UploadType.File]: { style: styles.file, label: 'File' },
   }
 
   const onPasswordChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,13 +53,20 @@ export default function Download(){
               </a>
             </>
           ) }
+          { flags.uploadType === UploadType.File && (
+            <>
+              <a href={data} download='unknown.dat'>
+                <Button>Download</Button>
+              </a>
+            </>
+          ) }
         </div>
       </div>
     )
   }
   return (
     <div className={styles.download}>
-      <div className={styles.file}>
+      <div className={styles.media}>
         <i className={`fa-solid ${showPasswordModal ? 'fa-file-shield' : 'fa-envelope-open-text'}`} />
       </div>
       <div className={styles.details}>
