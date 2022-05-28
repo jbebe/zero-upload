@@ -47,6 +47,5 @@ export const types = {
   [UploadType.File]: { 
     label: 'File', 
     component: <File />,
-    comingSoon: true,
   },
 }

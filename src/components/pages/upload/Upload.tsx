@@ -38,10 +38,9 @@ export default function Upload(){
 
   const [uploadType, setUploadType] = useState<UploadType>(UploadType.Text)
   const renderMenu = () => objectEntries(types).map(([type, obj]) => {
-    const isComingSoon = 'comingSoon' in obj
     return <li 
-      onClick={() => isComingSoon || setUploadType(+type)} 
-      className={`${+type === uploadType ? styles.active : ''} ${isComingSoon ? styles.comingSoon : ''}`}
+      onClick={() => setUploadType(+type)} 
+      className={+type === uploadType ? styles.active : ''}
     >{obj.label}</li>
   })
   return <div className={styles.upload}>

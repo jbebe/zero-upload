@@ -1,6 +1,6 @@
 $primary-color: #00565c;
 
-.image {
+.image, .file {
   background-position: center;
   background-size: cover;
 
@@ -18,7 +18,7 @@ $primary-color: #00565c;
     margin: 0 0 10px 0;
     height: 60px;
   
-    color: #777;
+    color: #333;
     font-family: monospace;
     font-size: inherit;
     cursor: pointer;
@@ -33,6 +33,7 @@ $primary-color: #00565c;
       color: #01bebe;
       font-size: 25px;
       text-shadow: -1px -1px 0px white;
+      margin-right: 8px;
     }
   }
 }
