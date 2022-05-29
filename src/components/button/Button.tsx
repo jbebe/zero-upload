@@ -1,6 +1,7 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode } from "react"
+import { FormState } from "../../utils/types"
 import styles from './Button.module.scss'
 
-export default function Button({ children }: { children: ReactNode }) {
-  return <button className={styles.button}>{ children }</button>
+export default function Button({ children, state }: { children: ReactNode, state?: FormState }) {
+  return <button className={`${styles.button} ${state ? styles[state] : ''}`}>{ children }</button>
 }

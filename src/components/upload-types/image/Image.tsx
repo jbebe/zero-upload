@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { FormFields } from '../../../utils/types'
-import { addFileToFormData, renderFileName, sendFileChangedEvent } from '../upload-types-common'
+import { addFileToFormData, renderFileName, sendChangeEvent } from '../upload-types-common'
 import styles from './Image.module.scss'
 
 export default function Image(){
@@ -15,7 +15,7 @@ export default function Image(){
     setFileName(file.name)
     setImageUrl(URL.createObjectURL(file))
     addFileToFormData(file)
-    sendFileChangedEvent(componentRef)
+    sendChangeEvent(componentRef)
   }, [])
   const {getRootProps, getInputProps} = useDropzone({
     onDrop,

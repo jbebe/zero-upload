@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react'
+import React, { useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { LinkCreator } from '../../../logic/link-creator'
 import { UploadType } from '../../../utils/types'

@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styles from './Upload.module.scss'
-import { UploadType } from '../../../utils/types'
+import { FormState, UploadType } from '../../../utils/types'
 import { objectEntries } from '../../../utils/vanilla-helpers'
 import Compatibility from '../../../components/compatibility/Compatibility'
 import Encryption from '../../../components/encryption/Encryption'
 import { types, onSubmit, onChange } from './helper'
 import Button from '../../button/Button'
+import { sendChangeEvent } from '../../upload-types/upload-types-common'
 
 export default function Upload(){
   (async () => {
@@ -36,16 +37,24 @@ export default function Upload(){
     }*/
   })()
 
-  const [uploadType, setUploadType] = useState<UploadType>(UploadType.Text)
+  const [uploadType, setUploadType] = useState(UploadType.Text)
+  const [formState, setFormState] = useState(FormState.Disabled)
+  const tabRef = useRef<HTMLDivElement>()
+  useEffect(() => sendChangeEvent(tabRef), [uploadType])
   const renderMenu = () => objectEntries(types).map(([type, obj]) => {
     return <li 
+      key={type}
       onClick={() => setUploadType(+type)} 
       className={+type === uploadType ? styles.active : ''}
     >{obj.label}</li>
   })
   return <div className={styles.upload}>
-    <form onSubmit={onSubmit(uploadType)} onChange={onChange} onKeyUp={onChange}>
-      <div className={styles.tabContainer}>
+    <form 
+      onSubmit={onSubmit(uploadType)} 
+      onChange={onChange(uploadType, setFormState)} 
+      onKeyUp={onChange(uploadType, setFormState)}
+    >
+      <div className={styles.tabContainer} ref={tabRef}>
         <ul className={styles.tab}>
           {renderMenu()}
         </ul>
@@ -53,7 +62,7 @@ export default function Upload(){
       </div>
       {types[uploadType].component}
       <Encryption className={styles.encryption} />
-      <Button>Create Link</Button>
+      <Button state={formState}>Create Link</Button>
     </form>
   </div>
 }

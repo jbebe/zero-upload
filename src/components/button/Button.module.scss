@@ -33,4 +33,19 @@
   &:focus, &:hover {
     box-shadow: $btn-color2 0 0 0 1px inset, rgba(50, 50, 93, .2) 0 0 10px 0, rgba(0, 0, 0, .1) 0 2px 2px 0;
   }
+
+  &.disabled {
+    cursor: not-allowed;
+    color: #fff;
+    background-color: #ccc;
+    box-shadow: none;
+  }
+
+  &.loading {
+    cursor: wait;
+  }
+
+  &.enabled {
+    
+  }
 }

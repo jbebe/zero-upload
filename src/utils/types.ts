@@ -2,6 +2,12 @@ export enum PageType { Upload, Download }
 
 export enum UploadType { Text, Image, File }
 
+export enum FormState { 
+  Disabled = 'disabled', 
+  Loading = 'loading', 
+  Enabled = 'enabled',
+}
+
 export enum CompatibilityType { 
   None = 0,
   Maximum = 1, 

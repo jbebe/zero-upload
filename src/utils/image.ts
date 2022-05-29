@@ -13,7 +13,7 @@ async function isAvifSupportedAsync(): Promise<boolean> {
         'QAAAAMSURBVBhXY/j//z8ABf4C/qc1gYQAAAAASUVORK5CYII='
       avif.onload = avif.onerror = function () {
           _avifSupported = avif.height === 1
-          resolve(_avifSupported);
+          resolve(_avifSupported)
       }
     })
   }

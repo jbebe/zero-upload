@@ -17,7 +17,7 @@ export function addFileToFormData(file: File) {
     (document.querySelector('input[type=file]') as HTMLInputElement).files = dt.files
 }
 
-export function sendFileChangedEvent(componentRef: React.MutableRefObject<HTMLDivElement>) {
+export function sendChangeEvent(componentRef: React.MutableRefObject<HTMLDivElement>) {
   // Send event to form
   const dropEvent = new CustomEvent<HTMLFormElement>('change', { bubbles: true })
   componentRef.current.dispatchEvent(dropEvent)

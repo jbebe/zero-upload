@@ -28,17 +28,13 @@
         cursor: pointer;
         color: #888;
         font-weight: 500;
+        user-select: none;
   
         &:not(.coming-soon):hover, &:not(.coming-soon):focus, &.active {
           border-bottom: 2px solid black;
           color: black;
         }
 
-        &.coming-soon {
-          color: #ccc;
-          text-decoration: line-through;
-        }
-  
         &.compatibility {
           justify-self: right;
         }
