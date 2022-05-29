@@ -2,8 +2,7 @@ import { Bitfield } from "../utils/bitfield"
 import { decryptDataAsync, encryptDataAsync } from "../utils/crypto"
 import { decodeFile, loadFileAsync } from "../utils/file"
 import { decodeImageAsync, fuzzyEncodeImageAsync } from "../utils/image"
-import { formatSize } from "../utils/size"
-import { CompatibilityType, ImageMimeType, UploadRequest, UploadType } from "../utils/types"
+import { CompatibilityType, ErrorType, PackResult, UploadRequest, UploadType } from "../utils/types"
 import { convertStringToUint8, convertUint8ToString } from "../utils/vanilla-helpers"
 import { iFactor, iFactorCompatibility, urlDecode, urlEncode } from "./url-encoder"
 
@@ -70,7 +69,7 @@ export class LinkCreator {
     return compressedData
   }
 
-  public static async packAsync(request: UploadRequest){
+  public static async packAsync(request: UploadRequest): Promise<PackResult> {
     // Validate & compress if shorter
     const maxUrlLength = LinkCreator.getEffectiveUrlLength(request.compatibility)
     let data: Uint8Array
@@ -120,9 +119,24 @@ export class LinkCreator {
 
     // URL encode
     if (data.byteLength > maxUrlLength)
-      throw new Error(`Url reached maximum length: ${formatSize(data.byteLength)}`)
+      return {
+        error: {
+          type: ErrorType.UrlLength,
+          length: data.byteLength,
+          maxLength: maxUrlLength,
+        }
+      }
+    
     const urlEncoded = urlEncode(data, request.compatibility === 1)
-    return `${flagsFragment}${urlEncoded}`
+    const result: PackResult = {
+      url: `${flagsFragment}${urlEncoded}`,
+    }
+    if (request.uploadType === UploadType.Image)
+      result.info = {
+        length: request.imagedata.size,
+        maxLength: maxUrlLength,
+      }
+    return result
   }
 
   public static getEffectiveUrlLength(urlCompatibility: CompatibilityType){
@@ -137,6 +151,6 @@ export class LinkCreator {
     const baseUrlLength = location.href.length
     const dataLength = supportedUrlLength - baseUrlLength
     const urlEncodeMultiplier = urlCompatibility === CompatibilityType.Maximum ? iFactorCompatibility : iFactor
-    return dataLength / urlEncodeMultiplier
+    return (dataLength / urlEncodeMultiplier) | 0
   }
 }

@@ -39,6 +39,7 @@ export default function Upload(){
 
   const [uploadType, setUploadType] = useState(UploadType.Text)
   const [formState, setFormState] = useState(FormState.Disabled)
+  const [packedUrl, setPackedUrl] = useState('')
   const tabRef = useRef<HTMLDivElement>()
   useEffect(() => sendChangeEvent(tabRef), [uploadType])
   const renderMenu = () => objectEntries(types).map(([type, obj]) => {
@@ -50,9 +51,9 @@ export default function Upload(){
   })
   return <div className={styles.upload}>
     <form 
-      onSubmit={onSubmit(uploadType)} 
-      onChange={onChange(uploadType, setFormState)} 
-      onKeyUp={onChange(uploadType, setFormState)}
+      onSubmit={onSubmit(formState, packedUrl)} 
+      onChange={onChange(uploadType, setFormState, setPackedUrl)} 
+      onKeyUp={onChange(uploadType, setFormState, setPackedUrl)}
     >
       <div className={styles.tabContainer} ref={tabRef}>
         <ul className={styles.tab}>

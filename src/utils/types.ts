@@ -31,6 +31,27 @@ export type UploadRequest = {
   [FormFields.FileData]: File | null,
 }
 
+export enum ErrorType {
+  UrlLength,
+}
+
+export type PackError = {
+  type: ErrorType,
+}
+
+export type ImagePackInfo = {
+  length: number,
+  maxLength: number,
+}
+
+export type UrlPackError = PackError & ImagePackInfo
+
+export type PackResult = {
+  url?: string,
+  info?: ImagePackInfo,
+  error?: UrlPackError,
+}
+
 export enum ImageType {
   Webp = 0,
   Png = 1,
