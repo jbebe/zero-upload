@@ -51,7 +51,7 @@ export const onChange =
   async (evt: React.FormEvent<HTMLFormElement> | React.KeyboardEvent<HTMLFormElement>) => {
   const formData = new FormData(evt.currentTarget)
   const request = createRequest(uploadType, formData)
-  console.log('form changed', request)
+  //console.log('form changed', request)
   if (!request){
     setFormState(FormState.Disabled)
     return
